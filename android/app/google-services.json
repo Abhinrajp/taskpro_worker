@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "303514847232",
+    "project_id": "taskpro-a4d5c",
+    "storage_bucket": "taskpro-a4d5c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:303514847232:android:4d34038a99ce41648330e5",
+        "android_client_info": {
+          "package_name": "in.taskpro.worker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlZWznVrt30eFPdDBkWB96p5VSpiqPoOo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
