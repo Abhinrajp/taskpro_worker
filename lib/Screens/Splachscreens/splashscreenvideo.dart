@@ -17,7 +17,7 @@ class _SplashscreenvideoState extends State<Splashscreenvideo> {
   void initState() {
     super.initState();
 
-    Timer(const Duration(seconds: 8), () {
+    Timer(const Duration(seconds: 4), () {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(

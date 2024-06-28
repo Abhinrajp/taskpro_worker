@@ -45,7 +45,7 @@ class _OnboradingScreenState extends State<OnboradingScreen> {
       bottomSheet: Container(
         padding: const EdgeInsets.symmetric(horizontal: 25),
         height: 50,
-        color: Colors.white,
+        color: Colors.transparent,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -58,7 +58,7 @@ class _OnboradingScreenState extends State<OnboradingScreen> {
                   dotWidth: 12,
                   activeDotColor: primarycolour),
               onDotClicked: (index) => controller.animateToPage(index,
-                  duration: const Duration(seconds: 1), curve: Curves.easeIn),
+                  duration: const Duration(seconds: 1), curve: Curves.linear),
             ),
             isLastPage
                 ? GestureDetector(

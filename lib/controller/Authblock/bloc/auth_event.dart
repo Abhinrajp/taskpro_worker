@@ -1,4 +1,3 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 abstract class AuthEvent {
@@ -11,7 +10,7 @@ class SignUpRequested extends AuthEvent {
   final String firstName;
   final String lastName;
   final String phoneNumber;
-  final LatLng? location;
+  final String location;
   final String maxQualification;
   final String workType;
   final String about;
