@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskpro/Screens/authentication/signupscreen.dart';
+import 'package:taskpro/Screens/authentication/Signup/signupscreen.dart';
 import 'package:taskpro/const.dart';
 
 class SplashscreenThree extends StatelessWidget {

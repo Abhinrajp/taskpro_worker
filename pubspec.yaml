@@ -49,6 +49,7 @@ dependencies:
   permission_handler: ^11.3.1
   uuid: ^4.4.0
   geocoding: ^3.0.0
+  animated_text_kit: ^4.2.2
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +85,7 @@ flutter:
     - lib/Assets/splashscreenvideo.json
     - lib/Assets/splashscreen.json
     - lib/Assets/text-1719202244246.png
+    - lib/Assets/resetanimation2.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -97,9 +99,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   # fonts:
-  #   - family: Schyler
+  #   - family: Montserrat
   #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Montserrat-VariableFont_wght
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

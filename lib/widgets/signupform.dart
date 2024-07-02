@@ -1,10 +1,9 @@
-import 'dart:io';
+// ignore_for_file: must_be_immutable
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:taskpro/const.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class CustomDialogButton extends StatefulWidget {
   final Function(XFile?) onImageSelected;
@@ -44,7 +43,7 @@ class _CustomDialogButtonState extends State<CustomDialogButton> {
                       await _pickImage(ImageSource.camera);
                       Navigator.of(context).pop();
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.camera_alt_outlined,
                       size: 45,
                       color: Colors.white,
@@ -55,7 +54,7 @@ class _CustomDialogButtonState extends State<CustomDialogButton> {
                       await _pickImage(ImageSource.gallery);
                       Navigator.of(context).pop();
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.image_outlined,
                       size: 45,
                       color: Colors.white,
@@ -67,7 +66,7 @@ class _CustomDialogButtonState extends State<CustomDialogButton> {
           ),
         );
       },
-      icon: Icon(
+      icon: const Icon(
         Icons.camera_alt_outlined,
         size: 28,
         color: Colors.black,
@@ -98,6 +97,7 @@ class Signupform extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controler,
       minLines: minline,
       maxLines: maxline,
       maxLength: maxlength,
@@ -147,22 +147,31 @@ class Aadharcntainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: const BoxDecoration(
+        color: Colors.grey,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+      ),
       height: 80,
       width: 150,
-      color: Colors.grey,
       child: aaadharpic != null
           ? GestureDetector(
               onLongPress: () {
                 showFullImage(context, File(aaadharpic!.path), 'aadhaar');
               },
-              child: Image.file(
-                File(aaadharpic!.path),
-                fit: BoxFit.cover,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(15)),
+                child: Image.file(
+                  File(aaadharpic!.path),
+                  fit: BoxFit.cover,
+                ),
               ),
             )
-          : Image.asset(
-              'lib/Assets/user-image.png',
-              fit: BoxFit.cover,
+          : ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              child: Image.asset(
+                'lib/Assets/user-image.png',
+                fit: BoxFit.cover,
+              ),
             ),
     );
   }
