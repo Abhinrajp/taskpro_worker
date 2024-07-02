@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:taskpro/Screens/Splachscreens/splashscreenvideo.dart';
 import 'package:taskpro/const.dart';
-import 'package:taskpro/controller/Authblock/bloc/auth_bloc.dart';
+import 'package:taskpro/controller/Authblock/Authbloc/auth_bloc.dart';
+import 'package:taskpro/controller/Authblock/Imagebloc/image_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
               FirebaseStorage.instance,
               FirebaseFirestore.instance,
             ),
-          )
+          ),
+          BlocProvider(create: (context) => ImageBloc())
         ],
         child: MaterialApp(
           title: 'taskpro',

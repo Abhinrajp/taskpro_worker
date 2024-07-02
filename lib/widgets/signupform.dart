@@ -18,7 +18,7 @@ class CustomDialogButton extends StatefulWidget {
 }
 
 class _CustomDialogButtonState extends State<CustomDialogButton> {
-  Future<void> _pickImage(ImageSource source) async {
+  Future<void> pickImage(ImageSource source) async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: source);
     widget.onImageSelected(image);
@@ -40,7 +40,7 @@ class _CustomDialogButtonState extends State<CustomDialogButton> {
                 children: [
                   IconButton(
                     onPressed: () async {
-                      await _pickImage(ImageSource.camera);
+                      await pickImage(ImageSource.camera);
                       Navigator.of(context).pop();
                     },
                     icon: const Icon(
@@ -51,7 +51,7 @@ class _CustomDialogButtonState extends State<CustomDialogButton> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      await _pickImage(ImageSource.gallery);
+                      await pickImage(ImageSource.gallery);
                       Navigator.of(context).pop();
                     },
                     icon: const Icon(
@@ -76,23 +76,26 @@ class _CustomDialogButtonState extends State<CustomDialogButton> {
 }
 
 class Signupform extends StatelessWidget {
-  String hinttext, valmsg;
+  String hinttext;
+  final String? Function(String?)? validator;
   int? maxline, minline, maxlength;
   TextEditingController controler;
-  TextCapitalization? textCapitalization;
+  TextCapitalization textCapitalization;
+  TextInputType keybordtype;
   Icon icon;
   Color? color;
   Signupform(
-      {this.textCapitalization,
+      {this.keybordtype = TextInputType.name,
+      this.textCapitalization = TextCapitalization.none,
       this.color,
       required this.controler,
       this.maxline,
-      required this.valmsg,
       this.minline,
       this.maxlength,
       required this.hinttext,
       super.key,
-      required this.icon});
+      required this.icon,
+      this.validator});
 
   @override
   Widget build(BuildContext context) {
@@ -100,10 +103,11 @@ class Signupform extends StatelessWidget {
       controller: controler,
       minLines: minline,
       maxLines: maxline,
+      keyboardType: keybordtype,
       maxLength: maxlength,
-      textCapitalization: textCapitalization!,
+      textCapitalization: textCapitalization,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (value) => (value == null || value.isEmpty) ? valmsg : null,
+      validator: validator,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(vertical: 15),
         fillColor: Colors.white.withOpacity(0.8),
@@ -130,6 +134,28 @@ class Signupform extends StatelessWidget {
           fontSize: 13,
         ),
       ),
+    );
+  }
+}
+
+class Customtextforsignup extends StatelessWidget {
+  String text;
+  FontWeight fontWeight;
+  double fontsize;
+  Color color;
+  Customtextforsignup(
+      {super.key,
+      this.fontsize = 13,
+      this.fontWeight = FontWeight.bold,
+      required this.text,
+      this.color = Colors.black});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style:
+          TextStyle(fontWeight: fontWeight, fontSize: fontsize, color: color),
     );
   }
 }

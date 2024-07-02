@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:taskpro/const.dart';
 import 'package:taskpro/widgets/signupform.dart';
+import 'package:taskpro/widgets/signupformvalidations.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -56,7 +57,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                     Signupform(
                       controler: email,
-                      valmsg: 'Enter your mail',
+                      validator: validateformail,
                       hinttext: 'Email',
                       icon: const Icon(Icons.email_outlined),
                       textCapitalization: TextCapitalization.none,

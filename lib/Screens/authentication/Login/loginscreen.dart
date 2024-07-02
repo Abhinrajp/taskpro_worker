@@ -3,10 +3,12 @@ import 'dart:developer';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:taskpro/Screens/Home/homescreen.dart';
 import 'package:taskpro/Screens/authentication/Resetpassword/resetpassword.dart';
 import 'package:taskpro/Screens/authentication/Signup/signupscreen.dart';
 import 'package:taskpro/const.dart';
 import 'package:taskpro/widgets/signupform.dart';
+import 'package:taskpro/widgets/signupformvalidations.dart';
 
 class Logingscreen extends StatefulWidget {
   const Logingscreen({super.key});
@@ -118,7 +120,7 @@ class _LogingscreenState extends State<Logingscreen> {
                   ),
                   Signupform(
                     controler: email,
-                    valmsg: 'Enter your mail',
+                    validator: validateformail,
                     hinttext: 'Email',
                     icon: const Icon(Icons.email_outlined),
                     textCapitalization: TextCapitalization.none,
@@ -128,7 +130,7 @@ class _LogingscreenState extends State<Logingscreen> {
                   ),
                   Signupform(
                       controler: password,
-                      valmsg: 'Enter your password',
+                      validator: validateforpassword,
                       hinttext: 'Password',
                       textCapitalization: TextCapitalization.none,
                       icon: const Icon(Icons.remove_red_eye_outlined)),
@@ -224,6 +226,11 @@ class _LogingscreenState extends State<Logingscreen> {
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email.text,
       password: password.text,
+    );
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Homescreen()),
+      (route) => false,
     );
   }
 }

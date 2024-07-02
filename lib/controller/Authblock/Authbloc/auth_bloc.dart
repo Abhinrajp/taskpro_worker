@@ -6,8 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:taskpro/controller/Authblock/bloc/auth_event.dart';
-import 'package:taskpro/controller/Authblock/bloc/auth_state.dart';
+import 'package:taskpro/controller/Authblock/Authbloc/auth_event.dart';
+import 'package:taskpro/controller/Authblock/Authbloc/auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final FirebaseAuth firebaseAuth;

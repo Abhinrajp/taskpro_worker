@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:taskpro/Screens/authentication/Login/loginscreen.dart';
+import 'package:taskpro/widgets/signupsnakbar.dart';
 
 class Homescreen extends StatelessWidget {
   const Homescreen({super.key});
@@ -21,7 +23,7 @@ class Homescreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           log('logout clicked');
-          signout();
+          signout(context, user);
           log('after logout clicked');
         },
         child: const Icon(Icons.exit_to_app),
@@ -29,7 +31,16 @@ class Homescreen extends StatelessWidget {
     );
   }
 
-  signout() async {
+  signout(BuildContext context, User user) async {
     await FirebaseAuth.instance.signOut();
+    CustomSnackBar.authenticationresultsnakbar(
+        context, 'You logoutedd from ${user.displayName}', Colors.red);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Logingscreen(),
+      ),
+      (route) => false,
+    );
   }
 }
