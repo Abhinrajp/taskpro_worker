@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:taskpro/const.dart';
+import 'package:taskpro/controller/Authblock/Mapbloc/map_bloc.dart';
 
 class Mapviewpage extends StatefulWidget {
   const Mapviewpage({Key? key}) : super(key: key);
@@ -18,87 +19,83 @@ class _MapviewpageState extends State<Mapviewpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Map',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(10),
-              backgroundColor: primarycolour,
-            ),
-            child: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text(
+            'Map',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(10),
+                backgroundColor: primarycolour,
+              ),
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
             ),
           ),
-        ),
-        actions: [
-          if (selectedLocation != null)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (selectedLocation != null) {
-                    List<geocoding.Placemark> placemarks =
-                        await geocoding.placemarkFromCoordinates(
-                            selectedLocation!.latitude,
-                            selectedLocation!.longitude);
-                    if (placemarks.isNotEmpty) {
-                      geocoding.Placemark place = placemarks.first;
-                      setState(() {
-                        selectedPlace =
-                            "${place.name}, ${place.street}, ${place.locality}, ${place.subLocality}, ${place.administrativeArea}, ${place.country}";
-                      });
-                    }
-
-                    Navigator.pop(context, {
-                      'location': selectedLocation,
-                      'place': selectedPlace,
-                    });
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(10),
-                  backgroundColor: primarycolour,
-                ),
-                child: const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                ),
-              ),
+          actions: [
+            BlocBuilder<MapBloc, MapState>(
+              builder: (context, state) {
+                if (state.selectedlocation != null) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        context
+                            .read<MapBloc>()
+                            .fectplacename(state.selectedlocation!);
+                        Navigator.pop(context, {
+                          'location': selectedLocation,
+                          'place': selectedPlace,
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(10),
+                        backgroundColor: primarycolour,
+                      ),
+                      child: const Icon(
+                        Icons.check,
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                }
+                return Container();
+              },
             )
-        ],
-      ),
-      body: GoogleMap(
-        initialCameraPosition: const CameraPosition(
-          target: googleplex,
-          zoom: 13,
+          ],
         ),
-        markers: {
-          if (selectedLocation != null)
-            Marker(
-              markerId: const MarkerId('selectedLocation'),
-              icon: BitmapDescriptor.defaultMarker,
-              position: selectedLocation!,
-            ),
-        },
-        onTap: (LatLng latLng) {
-          setState(() {
-            selectedLocation = latLng;
-          });
-        },
-      ),
-    );
+        body: BlocBuilder<MapBloc, MapState>(
+          builder: (context, state) {
+            return GoogleMap(
+              initialCameraPosition: const CameraPosition(
+                target: googleplex,
+                zoom: 13,
+              ),
+              markers: {
+                if (state.selectedlocation != null)
+                  Marker(
+                    markerId: const MarkerId('selectedLocation'),
+                    icon: BitmapDescriptor.defaultMarker,
+                    position: state.selectedlocation!,
+                  ),
+              },
+              onTap: (LatLng latLng) {
+                context.read<MapBloc>().add(Locationselected(latLng));
+              },
+            );
+          },
+        ));
   }
 }

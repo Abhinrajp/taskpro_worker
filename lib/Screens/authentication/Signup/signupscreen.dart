@@ -1,19 +1,20 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:taskpro/Screens/Home/homescreen.dart';
 import 'package:taskpro/Screens/authentication/Login/loginscreen.dart';
 import 'package:taskpro/Screens/authentication/Signup/mapview.dart';
 import 'package:taskpro/Utilities/utilities.dart';
 import 'package:taskpro/const.dart';
 import 'package:taskpro/controller/Authblock/Authbloc/auth_bloc.dart';
-import 'package:taskpro/controller/Authblock/Authbloc/auth_event.dart';
 import 'package:taskpro/controller/Authblock/Authbloc/auth_state.dart';
 import 'package:taskpro/controller/Authblock/Imagebloc/image_bloc.dart';
-import 'package:taskpro/widgets/signupform.dart';
-import 'package:taskpro/widgets/signupformvalidations.dart';
+import 'package:taskpro/controller/Authblock/Mapbloc/map_bloc.dart';
+import 'package:taskpro/widgets/signupwidget/signupform.dart';
+import 'package:taskpro/widgets/signupwidget/signupformvalidations.dart';
 import 'package:taskpro/widgets/signupsnakbar.dart';
+import 'package:taskpro/widgets/signupwidget/signupbutton.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -26,24 +27,6 @@ final formKey = GlobalKey<FormState>();
 Utilities utilities = Utilities();
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  void aadharFrontImageSelected(XFile? image) {
-    setState(() {
-      utilities.aadharfornt = image;
-    });
-  }
-
-  void aadharBackImageSelected(XFile? image) {
-    setState(() {
-      utilities.aadharback = image;
-    });
-  }
-
-  void profileselectedimage(XFile? image) {
-    setState(() {
-      utilities.profileimage = image;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -74,11 +57,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               if (state is AuthFailure) {
                 CustomSnackBar.authenticationresultsnakbar(context, state.error,
                     const Color.fromARGB(255, 234, 106, 97));
-                print(state.error);
               }
             }, builder: (context, state) {
               if (state is AuthLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                  child:
+                      LottieBuilder.asset('lib/Assets/signup-animation.json'),
+                );
               }
               return Padding(
                   padding:
@@ -108,26 +93,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         BlocBuilder<ImageBloc, ImageState>(
                                           builder: (context, state) {
                                             if (state is Profileimageselected) {
-                                              return GestureDetector(
-                                                onLongPress: () {
-                                                  showFullImage(
-                                                    context,
-                                                    state.imagefile,
-                                                    'profile',
-                                                  );
-                                                },
-                                                child: CircleAvatar(
-                                                  backgroundImage: FileImage(
-                                                      state.imagefile),
-                                                  maxRadius: 53,
-                                                ),
-                                              );
+                                              utilities.profileimage =
+                                                  XFile(state.imagefile.path);
+                                              return Profilecircleavathar(
+                                                  profilepic:
+                                                      utilities.profileimage,
+                                                  showFullImage: showFullImage);
                                             } else {
-                                              return const CircleAvatar(
-                                                backgroundImage: AssetImage(
-                                                    'lib/Assets/user-image.png'),
-                                                maxRadius: 53,
-                                              );
+                                              return Profilecircleavathar(
+                                                  profilepic:
+                                                      utilities.profileimage,
+                                                  showFullImage: showFullImage);
                                             }
                                           },
                                         ),
@@ -180,6 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     validator: validateformail),
                                 const SizedBox(height: 17),
                                 Signupform(
+                                    validator: validateforpassword,
                                     icon: const Icon(
                                         Icons.remove_red_eye_outlined),
                                     textCapitalization: TextCapitalization.none,
@@ -191,66 +168,50 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     validator: validatePhoneNumber,
                                     hinttext: 'Phone Number',
                                     keybordtype: TextInputType.number,
+                                    maxlength: 10,
                                     icon: const Icon(Icons.phone_rounded)),
                                 const SizedBox(height: 17),
-                                TextFormField(
-                                    readOnly: true,
-                                    onTap: () async {
-                                      final result = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const Mapviewpage()));
-
-                                      if (result != null) {
-                                        setState(() {
-                                          utilities.selectedLocationLatLng =
-                                              result['location'];
-                                          utilities.location.text =
-                                              result['place'];
-                                        });
-                                      }
-                                    },
-                                    controller: utilities.location,
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 15),
-                                      enabledBorder: const OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15)),
-                                        borderSide:
-                                            BorderSide(color: primarycolour),
-                                      ),
-                                      focusedBorder: const OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15)),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                        borderSide:
-                                            const BorderSide(color: Colors.red),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                        borderSide:
-                                            const BorderSide(color: Colors.red),
-                                      ),
-                                      hintText: 'Location',
-                                      prefixIcon: const Icon(
+                                BlocConsumer<MapBloc, MapState>(
+                                    listener: (context, state) {
+                                  if (state.selectedplace != null) {
+                                    utilities.selectedLocationLatLng =
+                                        state.selectedlocation;
+                                    utilities.location.text =
+                                        state.selectedplace!;
+                                  }
+                                }, builder: (context, state) {
+                                  return Signupform(
+                                      controler: utilities.location,
+                                      keybordtype: TextInputType.none,
+                                      maxlength: null,
+                                      maxline: 1,
+                                      minline: 1,
+                                      textCapitalization:
+                                          TextCapitalization.none,
+                                      hinttext: 'Location',
+                                      validator: validateforlocation,
+                                      readonly: true,
+                                      icon: const Icon(
                                           Icons.location_on_outlined),
-                                      hintStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          color: primarycolour,
-                                          fontSize: 13),
-                                    ),
-                                    validator: (value) {
-                                      if (utilities.selectedLocationLatLng ==
-                                          null) {
-                                        return 'Location is required';
-                                      }
-                                      return null;
-                                    }),
+                                      onTap: () async {
+                                        final result = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    BlocProvider.value(
+                                                        value: context
+                                                            .read<MapBloc>(),
+                                                        child:
+                                                            const Mapviewpage())));
+                                        if (result != null) {
+                                          context.read<MapBloc>().add(
+                                              Locationselected(
+                                                  result['location']));
+                                          context.read<MapBloc>().fectplacename(
+                                              result['location']);
+                                        }
+                                      });
+                                }),
                                 const SizedBox(height: 20),
                                 Signupform(
                                     icon: const Icon(Icons.book_outlined),
@@ -260,72 +221,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     hinttext: 'Max Qualification',
                                     validator: validateforqualification),
                                 const SizedBox(height: 20),
-                                Row(children: [
-                                  Expanded(
-                                      child: DropdownButtonFormField<String>(
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 17),
-                                            prefixIcon:
-                                                const Icon(Icons.work_outline),
-                                            enabledBorder:
-                                                const OutlineInputBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(15)),
-                                              borderSide: BorderSide(
-                                                  color: Color.fromRGBO(
-                                                      17, 46, 64, 1.0)),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(15)),
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey[400]!),
-                                            ),
-                                            errorBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              borderSide: const BorderSide(
-                                                  color: Colors.red),
-                                            ),
-                                            focusedErrorBorder:
-                                                OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              borderSide: const BorderSide(
-                                                  color: Colors.red),
-                                            ),
-                                            labelText: 'Work Type',
-                                            labelStyle: const TextStyle(
-                                                color: primarycolour,
-                                                fontSize: 12),
-                                          ),
-                                          value: utilities.selectedWorkType,
-                                          items: utilities.workerTypes
-                                              .map((String workerType) {
-                                            return DropdownMenuItem<String>(
-                                              value: workerType,
-                                              child: Text(workerType),
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              utilities.selectedWorkType =
-                                                  newValue;
-                                            });
-                                          },
-                                          validator: (value) {
-                                            if (utilities.selectedWorkType ==
-                                                    null ||
-                                                utilities.selectedWorkType!
-                                                    .isEmpty) {
-                                              return 'Choose your work';
-                                            }
-                                            return null;
-                                          }))
-                                ]),
+                                Signupform(
+                                  controler: utilities.worktype,
+                                  hinttext: 'Work Type',
+                                  icon: const Icon(Icons.work_outline),
+                                  items: utilities.workerTypes,
+                                  validator: validateforwork,
+                                  dropdownvalue: utilities.selectedWorkType,
+                                ),
                                 const SizedBox(height: 36),
                                 Row(children: [
                                   Stack(children: [
@@ -333,13 +236,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       builder: (context, state) {
                                         if (state
                                             is Aadhaarfrontimageselected) {
+                                          utilities.aadharfornt =
+                                              XFile(state.imagefile.path);
                                           return Aadharcntainer(
-                                              aaadharpic:
-                                                  XFile(state.imagefile.path),
+                                              aaadharpic: utilities.aadharfornt,
                                               showFullImage: showFullImage);
                                         } else {
                                           return Aadharcntainer(
-                                              aaadharpic: null,
+                                              aaadharpic: utilities.aadharfornt,
                                               showFullImage: showFullImage);
                                         }
                                       },
@@ -360,14 +264,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     BlocBuilder<ImageBloc, ImageState>(
                                       builder: (context, state) {
                                         if (state is Aadharbackimageselected) {
+                                          utilities.aadharback =
+                                              XFile(state.imagefile.path);
                                           return Aadharcntainer(
-                                            aaadharpic:
-                                                XFile(state.imagefile.path),
+                                            aaadharpic: utilities.aadharback,
                                             showFullImage: showFullImage,
                                           );
                                         } else {
                                           return Aadharcntainer(
-                                              aaadharpic: null,
+                                              aaadharpic: utilities.aadharback,
                                               showFullImage: showFullImage);
                                         }
                                       },
@@ -378,42 +283,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         child: CustomDialogButton(
                                             onImageSelected: (image) =>
                                                 BlocProvider.of<ImageBloc>(
-                                                  context,
-                                                ).add(
-                                                    Selectedaadharbackimageevent(
-                                                        image: image))))
+                                                        context)
+                                                    .add(
+                                                        Selectedaadharbackimageevent(
+                                                            image: image))))
                                   ])
                                 ]),
                                 Padding(
                                     padding:
                                         const EdgeInsets.only(top: 8, left: 20),
                                     child: Row(children: [
-                                      utilities.aadharfornt != null
-                                          ? Expanded(
-                                              child: Aadhartext(
-                                                  text: 'Aadhar Frontside',
-                                                  fontWeight: FontWeight.bold))
-                                          : Expanded(
-                                              child: Aadhartext(
-                                                  text: 'Aadhar Frontside',
-                                                  fontWeight:
-                                                      FontWeight.normal)),
-                                      const SizedBox(
-                                        width: 20,
+                                      Aadhartext(
+                                        text: 'Aadhar Frontside',
+                                        isbold: utilities.aadharfornt != null,
                                       ),
-                                      utilities.aadharback != null
-                                          ? Expanded(
-                                              child: Aadhartext(
-                                                  text: 'Aadhar Backside',
-                                                  fontWeight: FontWeight.bold))
-                                          : Expanded(
-                                              child: Aadhartext(
-                                                  text: 'Aadhar Backside',
-                                                  fontWeight:
-                                                      FontWeight.normal))
+                                      const SizedBox(width: 20),
+                                      Aadhartext(
+                                        text: 'Aadhar Frontside',
+                                        isbold: utilities.aadharback != null,
+                                      )
                                     ])),
-                                const SizedBox(height: 10),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 30),
                                 Signupform(
                                     icon: const Icon(Icons.info_outline),
                                     textCapitalization:
@@ -431,71 +321,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     fontsize: 11,
                                     fontWeight: FontWeight.w400),
                                 const SizedBox(height: 20),
-                                TextButton(
-                                  onPressed: () {
-                                    print(utilities.location.text);
-                                    print(
-                                        'work type is ${utilities.selectedWorkType}');
-                                    if (formKey.currentState!.validate() &&
-                                        utilities.profileimage != null &&
-                                        utilities.aadharfornt != null &&
-                                        utilities.aadharback != null) {
-                                      BlocProvider.of<AuthBloc>(context).add(
-                                          SignUpRequested(
-                                              email: utilities.email.text,
-                                              password: utilities.password.text,
-                                              firstName: utilities
-                                                  .firrstname.text,
-                                              lastName: utilities.lastname.text,
-                                              phoneNumber: utilities
-                                                  .phonenumber.text,
-                                              location: utilities.location.text,
-                                              maxQualification: utilities
-                                                  .maxqualification.text,
-                                              workType:
-                                                  utilities.selectedWorkType ??
-                                                      '',
-                                              about: utilities.about.text,
-                                              aadharBack: utilities.aadharback,
-                                              aadharFront:
-                                                  utilities.aadharfornt,
-                                              profileImage:
-                                                  utilities.profileimage));
-                                    } else if (utilities.aadharback == null ||
-                                        utilities.aadharfornt == null ||
-                                        utilities.profileimage == null) {
-                                      if (utilities.aadharback == null &&
-                                          utilities.aadharfornt == null &&
-                                          utilities.profileimage == null) {
-                                        CustomSnackBar
-                                            .authenticationresultsnakbar(
-                                                context,
-                                                'Add Image details',
-                                                Colors.red);
-                                      } else if (utilities.aadharback == null ||
-                                          utilities.aadharfornt == null) {
-                                        CustomSnackBar
-                                            .authenticationresultsnakbar(
-                                                context,
-                                                'Add your Aadhaar details',
-                                                Colors.red);
-                                      } else {
-                                        CustomSnackBar
-                                            .authenticationresultsnakbar(
-                                                context,
-                                                'Add your Photo',
-                                                Colors.red);
-                                      }
-                                    }
-                                  },
-                                  style: const ButtonStyle(
-                                      backgroundColor:
-                                          WidgetStatePropertyAll(primarycolour),
-                                      fixedSize: WidgetStatePropertyAll(
-                                          Size(400, 60))),
-                                  child: Customtextforsignup(
-                                      text: 'Sign Up', color: Colors.white),
-                                ),
+                                const Signupbutton(),
                                 const SizedBox(height: 20),
                                 Customtextforsignup(
                                     text: 'By signing up, you agree to our'),

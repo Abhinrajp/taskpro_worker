@@ -11,7 +11,7 @@ class CustomSnackBar {
             style: const TextStyle(color: Colors.white, fontSize: 15),
           ),
           backgroundColor: bgcolor,
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 5),
           behavior: SnackBarBehavior.floating,
           elevation: 4,
           shape: RoundedRectangleBorder(

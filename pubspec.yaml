@@ -86,6 +86,7 @@ flutter:
     - lib/Assets/splashscreen.json
     - lib/Assets/text-1719202244246.png
     - lib/Assets/resetanimation2.json
+    - lib/Assets/signup-animation.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

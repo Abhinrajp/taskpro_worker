@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:taskpro/Screens/authentication/Signup/signupscreen.dart';
 import 'package:taskpro/const.dart';
 
 class CustomDialogButton extends StatefulWidget {
@@ -84,6 +85,10 @@ class Signupform extends StatelessWidget {
   TextInputType keybordtype;
   Icon icon;
   Color? color;
+  bool readonly;
+  VoidCallback? onTap;
+  List<String>? items;
+  String? dropdownvalue;
   Signupform(
       {this.keybordtype = TextInputType.name,
       this.textCapitalization = TextCapitalization.none,
@@ -95,46 +100,95 @@ class Signupform extends StatelessWidget {
       required this.hinttext,
       super.key,
       required this.icon,
-      this.validator});
+      this.validator,
+      this.readonly = false,
+      this.onTap,
+      this.items,
+      this.dropdownvalue});
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controler,
-      minLines: minline,
-      maxLines: maxline,
-      keyboardType: keybordtype,
-      maxLength: maxlength,
-      textCapitalization: textCapitalization,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: validator,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(vertical: 15),
-        fillColor: Colors.white.withOpacity(0.8),
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-          borderSide: BorderSide(color: primarycolour),
+    if (items != null) {
+      return DropdownButtonFormField<String>(
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(vertical: 17),
+            prefixIcon: const Icon(Icons.work_outline),
+            enabledBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              borderSide: BorderSide(color: Color.fromRGBO(17, 46, 64, 1.0)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              borderSide: BorderSide(color: Colors.grey[400]!),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(color: Colors.red),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(color: Colors.red),
+            ),
+            labelText: 'Work Type',
+            labelStyle: const TextStyle(color: primarycolour, fontSize: 12),
+          ),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          value: dropdownvalue,
+          items: items!.map((String workerType) {
+            return DropdownMenuItem<String>(
+                value: workerType,
+                child: Text(
+                  workerType,
+                  style: TextStyle(
+                      fontWeight: dropdownvalue == workerType
+                          ? FontWeight.normal
+                          : FontWeight.normal),
+                ));
+          }).toList(),
+          onChanged: (String? newValue) {
+            controler.text = newValue ?? '';
+          },
+          validator: validator);
+    } else {
+      return TextFormField(
+        controller: controler,
+        minLines: minline,
+        maxLines: maxline,
+        keyboardType: keybordtype,
+        maxLength: maxlength,
+        readOnly: readonly,
+        onTap: onTap,
+        textCapitalization: textCapitalization,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: validator,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 15),
+          fillColor: Colors.white.withOpacity(0.8),
+          enabledBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+            borderSide: BorderSide(color: primarycolour),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+            borderSide: BorderSide(color: primarycolour),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
+          prefixIcon: Icon(icon.icon),
+          labelText: hinttext,
+          labelStyle: const TextStyle(
+            color: primarycolour,
+            fontSize: 13,
+          ),
         ),
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-          borderSide: BorderSide(color: Colors.white),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: Colors.red),
-        ),
-        prefixIcon: Icon(icon.icon),
-        labelText: hinttext,
-        labelStyle: const TextStyle(
-          color: primarycolour,
-          fontSize: 13,
-        ),
-      ),
-    );
+      );
+    }
   }
 }
 
@@ -203,21 +257,57 @@ class Aadharcntainer extends StatelessWidget {
   }
 }
 
+class Profilecircleavathar extends StatelessWidget {
+  final void Function(BuildContext context, File imageFile, String text)
+      showFullImage;
+  XFile? profilepic;
+  Profilecircleavathar({
+    super.key,
+    required this.profilepic,
+    required this.showFullImage,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return profilepic != null
+        ? GestureDetector(
+            onLongPress: () {
+              showFullImage(
+                context,
+                File(profilepic!.path),
+                'profile',
+              );
+            },
+            child: CircleAvatar(
+              backgroundImage: FileImage(File(profilepic!.path)),
+              maxRadius: 53,
+            ),
+          )
+        : const CircleAvatar(
+            backgroundImage: AssetImage('lib/Assets/user-image.png'),
+            maxRadius: 53,
+          );
+  }
+}
+
 class Aadhartext extends StatelessWidget {
   String text;
-  FontWeight fontWeight;
+  final bool isbold;
   Aadhartext({
     required this.text,
-    required this.fontWeight,
+    required this.isbold,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style:
-          TextStyle(color: Colors.black, fontSize: 12, fontWeight: fontWeight),
+    return Expanded(
+      child: Text(
+        text,
+        style: TextStyle(
+            fontWeight: isbold ? FontWeight.bold : FontWeight.normal,
+            fontSize: 11),
+      ),
     );
   }
 }

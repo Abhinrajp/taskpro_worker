@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -7,8 +9,9 @@ import 'package:taskpro/Screens/Home/homescreen.dart';
 import 'package:taskpro/Screens/authentication/Resetpassword/resetpassword.dart';
 import 'package:taskpro/Screens/authentication/Signup/signupscreen.dart';
 import 'package:taskpro/const.dart';
-import 'package:taskpro/widgets/signupform.dart';
-import 'package:taskpro/widgets/signupformvalidations.dart';
+import 'package:taskpro/widgets/signupwidget/signupform.dart';
+import 'package:taskpro/widgets/signupwidget/signupformvalidations.dart';
+import 'package:taskpro/widgets/signupsnakbar.dart';
 
 class Logingscreen extends StatefulWidget {
   const Logingscreen({super.key});
@@ -223,14 +226,25 @@ class _LogingscreenState extends State<Logingscreen> {
   }
 
   login() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email.text,
-      password: password.text,
-    );
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => Homescreen()),
-      (route) => false,
-    );
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email.text,
+        password: password.text,
+      );
+      CustomSnackBar.authenticationresultsnakbar(
+          context, 'Login Successfully', Colors.green);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const Homescreen()),
+        (route) => false,
+      );
+    } on FirebaseAuthException catch (e) {
+      log(e.code);
+      CustomSnackBar.authenticationresultsnakbar(
+          context, 'Invalid Email or Password', Colors.red);
+    } catch (e) {
+      CustomSnackBar.authenticationresultsnakbar(
+          context, e.toString(), Colors.red);
+    }
   }
 }

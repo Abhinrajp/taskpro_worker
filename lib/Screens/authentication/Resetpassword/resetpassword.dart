@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:taskpro/Screens/authentication/Login/loginscreen.dart';
 import 'package:taskpro/const.dart';
-import 'package:taskpro/widgets/signupform.dart';
-import 'package:taskpro/widgets/signupformvalidations.dart';
+import 'package:taskpro/widgets/signupwidget/signupform.dart';
+import 'package:taskpro/widgets/signupwidget/signupformvalidations.dart';
+import 'package:taskpro/widgets/signupsnakbar.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -90,6 +92,21 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   resetpass() async {
-    await FirebaseAuth.instance.sendPasswordResetEmail(email: email.text);
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email.text);
+      if (!mounted) return;
+      CustomSnackBar.authenticationresultsnakbar(
+          context,
+          'A Link has been sent to your mail',
+          const Color.fromARGB(255, 47, 148, 232));
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const Logingscreen()),
+          (route) => false);
+    } catch (e) {
+      if (!mounted) return;
+      CustomSnackBar.authenticationresultsnakbar(
+          context, 'Failed to send reset email. Please try again.', Colors.red);
+    }
   }
 }
