@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:taskpro/Screens/Home/homescreen.dart';
-import 'package:taskpro/Screens/authentication/Login/loginscreen.dart';
+import 'package:taskpro/View/Home/homescreen.dart';
+import 'package:taskpro/View/authentication/Signup/signupscreen.dart';
 
 class WrapperForAuthentication extends StatefulWidget {
   const WrapperForAuthentication({super.key});
@@ -21,7 +21,7 @@ class _WrapperForAuthenticationState extends State<WrapperForAuthentication> {
           if (snapshot.hasData) {
             return const Homescreen();
           } else {
-            return const Logingscreen();
+            return const SignUpScreen();
           }
         },
       ),

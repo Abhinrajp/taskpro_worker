@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskpro/Screens/authentication/Signup/signupscreen.dart';
+import 'package:taskpro/View/authentication/Signup/signupscreen.dart';
 import 'package:taskpro/const.dart';
 
 class Splachscreenmain extends StatelessWidget {

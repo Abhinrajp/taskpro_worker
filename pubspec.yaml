@@ -50,6 +50,8 @@ dependencies:
   uuid: ^4.4.0
   geocoding: ^3.0.0
   animated_text_kit: ^4.2.2
+  random_string: ^2.3.1
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -87,6 +89,9 @@ flutter:
     - lib/Assets/text-1719202244246.png
     - lib/Assets/resetanimation2.json
     - lib/Assets/signup-animation.json
+    - lib/Assets/Account-created-animation.json
+    - lib/Assets/emailsendnew-animation.gif
+    - lib/Assets/Authloading.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -4,11 +4,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:taskpro/Screens/Splachscreens/splashscreenvideo.dart';
+import 'package:taskpro/View/Splachscreens/splashscreenvideo.dart';
 import 'package:taskpro/const.dart';
 import 'package:taskpro/controller/Authblock/Authbloc/auth_bloc.dart';
 import 'package:taskpro/controller/Authblock/Imagebloc/image_bloc.dart';
+import 'package:taskpro/controller/Authblock/Mailbloc/mail_bloc.dart';
 import 'package:taskpro/controller/Authblock/Mapbloc/map_bloc.dart';
+import 'package:taskpro/controller/Fetchbloc/fetchuser_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,18 +33,16 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider(create: (context) => ImageBloc()),
-          BlocProvider(
-            create: (context) => MapBloc(),
-          )
+          BlocProvider(create: (context) => MapBloc()),
+          BlocProvider(create: (context) => MailBloc()),
+          BlocProvider(create: (context) => FetchuserBloc()),
         ],
         child: MaterialApp(
-          title: 'taskpro',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: primarycolour),
-            useMaterial3: true,
-          ),
-          home: const Splashscreenvideo(),
-        ));
+            title: 'taskpro',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: primarycolour),
+                useMaterial3: true),
+            home: const Splashscreenvideo()));
   }
 }

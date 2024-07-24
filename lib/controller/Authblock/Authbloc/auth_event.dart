@@ -17,6 +17,7 @@ class SignUpRequested extends AuthEvent {
   final XFile? profileImage;
   final XFile? aadharFront;
   final XFile? aadharBack;
+  final String registerd;
 
   const SignUpRequested({
     required this.email,
@@ -28,6 +29,7 @@ class SignUpRequested extends AuthEvent {
     required this.maxQualification,
     required this.workType,
     required this.about,
+    this.registerd = 'registerd',
     this.profileImage,
     this.aadharFront,
     this.aadharBack,
@@ -44,6 +46,7 @@ class SignUpRequested extends AuthEvent {
         maxQualification,
         workType,
         about,
+        registerd,
         profileImage,
         aadharFront,
         aadharBack,

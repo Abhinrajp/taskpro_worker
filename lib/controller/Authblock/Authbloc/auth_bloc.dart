@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -39,7 +38,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               event.aadharBack!, 'aadhar_back/${user?.uid}.jpg');
         }
         log(event.phoneNumber);
-        await firestore.collection('workers').doc().set({
+        // String id = randomAlphaNumeric(10);
+        // log(user!.uid);
+        await firestore.collection('workers').doc(user?.uid).set({
+          'id': user?.uid,
           'firstName': event.firstName,
           'lastName': event.lastName,
           'phoneNumber': event.phoneNumber,
@@ -47,6 +49,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           'maxQualification': event.maxQualification,
           'workType': event.workType,
           'about': event.about,
+          'email': event.email,
+          'registerd': event.registerd,
           'profileImageUrl': profileimageurl,
           'aadharFrontUrl': aadharfrontimageurl,
           'aadharBackUrl': aadharbackimageurl,

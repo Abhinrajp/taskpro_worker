@@ -3,8 +3,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:taskpro/Screens/authentication/Signup/signupscreen.dart';
 import 'package:taskpro/const.dart';
+import 'package:taskpro/widgets/signupwidget/simmplewidget.dart';
 
 class CustomDialogButton extends StatefulWidget {
   final Function(XFile?) onImageSelected;
@@ -115,7 +115,7 @@ class Signupform extends StatelessWidget {
             prefixIcon: const Icon(Icons.work_outline),
             enabledBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(15)),
-              borderSide: BorderSide(color: Color.fromRGBO(17, 46, 64, 1.0)),
+              borderSide: BorderSide(color: Colors.black),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: const BorderRadius.all(Radius.circular(15)),
@@ -130,7 +130,7 @@ class Signupform extends StatelessWidget {
               borderSide: const BorderSide(color: Colors.red),
             ),
             labelText: 'Work Type',
-            labelStyle: const TextStyle(color: primarycolour, fontSize: 12),
+            labelStyle: const TextStyle(color: Colors.black, fontSize: 12),
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           value: dropdownvalue,
@@ -166,51 +166,22 @@ class Signupform extends StatelessWidget {
           fillColor: Colors.white.withOpacity(0.8),
           enabledBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(15)),
-            borderSide: BorderSide(color: primarycolour),
+            borderSide: BorderSide(color: Colors.black),
           ),
           focusedBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            borderSide: BorderSide(color: primarycolour),
-          ),
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              borderSide: BorderSide(color: Colors.black)),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: const BorderSide(color: Colors.red),
-          ),
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(color: Colors.red)),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: const BorderSide(color: Colors.red),
-          ),
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(color: Colors.red)),
           prefixIcon: Icon(icon.icon),
-          labelText: hinttext,
-          labelStyle: const TextStyle(
-            color: primarycolour,
-            fontSize: 13,
-          ),
+          label: Customtext(text: hinttext),
         ),
       );
     }
-  }
-}
-
-class Customtextforsignup extends StatelessWidget {
-  String text;
-  FontWeight fontWeight;
-  double fontsize;
-  Color color;
-  Customtextforsignup(
-      {super.key,
-      this.fontsize = 13,
-      this.fontWeight = FontWeight.bold,
-      required this.text,
-      this.color = Colors.black});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style:
-          TextStyle(fontWeight: fontWeight, fontSize: fontsize, color: color),
-    );
   }
 }
 

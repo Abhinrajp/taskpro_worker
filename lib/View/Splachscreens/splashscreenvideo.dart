@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:taskpro/Screens/Splachscreens/onborard.dart';
+import 'package:taskpro/wraper.dart';
 
 class Splashscreenvideo extends StatefulWidget {
   const Splashscreenvideo({super.key});
@@ -21,7 +21,7 @@ class _SplashscreenvideoState extends State<Splashscreenvideo> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const OnboradingScreen(),
+            builder: (context) => const WrapperForAuthentication(),
           ));
     });
 

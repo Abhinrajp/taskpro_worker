@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:taskpro/Screens/authentication/Login/loginscreen.dart';
+import 'package:taskpro/View/authentication/Login/loginscreen.dart';
 import 'package:taskpro/const.dart';
 import 'package:taskpro/widgets/signupwidget/signupform.dart';
 import 'package:taskpro/widgets/signupwidget/signupformvalidations.dart';
-import 'package:taskpro/widgets/signupsnakbar.dart';
+import 'package:taskpro/widgets/popups/signupsnakbar.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -25,12 +25,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       width: double.infinity,
       decoration: const BoxDecoration(
           gradient: LinearGradient(colors: [
-        Color.fromRGBO(17, 46, 64, 1.0),
+        primarycolour,
         Colors.white,
       ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.arrow_back, color: Colors.white)),
           backgroundColor: Colors.transparent,
           title: const Text(
             'Reset Password',
@@ -54,9 +59,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         child: LottieBuilder.asset(
                           'lib/Assets/resetanimation2.json',
                         )),
-                    const SizedBox(
-                      height: 50,
-                    ),
+                    const SizedBox(height: 50),
                     Signupform(
                       controler: email,
                       validator: validateformail,
@@ -64,22 +67,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       icon: const Icon(Icons.email_outlined),
                       textCapitalization: TextCapitalization.none,
                     ),
-                    const SizedBox(
-                      height: 30,
-                    ),
+                    const SizedBox(height: 30),
                     TextButton(
-                      onPressed: () async {
-                        await resetpass();
-                      },
-                      style: const ButtonStyle(
-                          backgroundColor:
-                              WidgetStatePropertyAll(primarycolour),
-                          fixedSize: WidgetStatePropertyAll(Size(350, 60))),
-                      child: const Text(
-                        'Reset',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
+                        onPressed: () async {
+                          await resetpass();
+                        },
+                        style: const ButtonStyle(
+                            backgroundColor:
+                                WidgetStatePropertyAll(primarycolour),
+                            fixedSize: WidgetStatePropertyAll(Size(350, 60))),
+                        child: const Text(
+                          'Reset',
+                          style: TextStyle(color: Colors.white),
+                        )),
                     const SizedBox(
                       height: 10,
                     ),
@@ -95,7 +95,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email.text);
       if (!mounted) return;
-      CustomSnackBar.authenticationresultsnakbar(
+      CustomPopups.authenticationresultsnakbar(
           context,
           'A Link has been sent to your mail',
           const Color.fromARGB(255, 47, 148, 232));
@@ -105,7 +105,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           (route) => false);
     } catch (e) {
       if (!mounted) return;
-      CustomSnackBar.authenticationresultsnakbar(
+      CustomPopups.authenticationresultsnakbar(
           context, 'Failed to send reset email. Please try again.', Colors.red);
     }
   }

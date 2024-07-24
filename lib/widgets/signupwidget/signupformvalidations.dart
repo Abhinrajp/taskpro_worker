@@ -1,5 +1,3 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 String? validatePhoneNumber(String? value) {
   if (value == null || value.isEmpty) {
     return 'Enter your Phone number';
@@ -58,6 +56,11 @@ String? validateformail(String? value) {
     return 'Please enter a valid email address';
   }
   return null;
+}
+
+String extractErrorMessage(String error) {
+  final errorParts = error.split('] ');
+  return errorParts.length > 1 ? errorParts[1] : error;
 }
 
 final RegExp emailregexp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',

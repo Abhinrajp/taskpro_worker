@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:taskpro/Screens/Splachscreens/splashscreenfour.dart';
-import 'package:taskpro/Screens/Splachscreens/splashscreenmain.dart';
-import 'package:taskpro/Screens/Splachscreens/splashscreensecond.dart';
-import 'package:taskpro/Screens/Splachscreens/splashscreenthree.dart';
+import 'package:taskpro/View/Splachscreens/splashscreenfour.dart';
+import 'package:taskpro/View/Splachscreens/splashscreenmain.dart';
+import 'package:taskpro/View/Splachscreens/splashscreensecond.dart';
+import 'package:taskpro/View/Splachscreens/splashscreenthree.dart';
+import 'package:taskpro/View/authentication/Signup/signupscreen.dart';
 import 'package:taskpro/const.dart';
-import 'package:taskpro/wraper.dart';
 
 class OnboradingScreen extends StatefulWidget {
   const OnboradingScreen({super.key});
@@ -67,8 +67,7 @@ class _OnboradingScreenState extends State<OnboradingScreen> {
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                const WrapperForAuthentication(),
+                            builder: (context) => const SignUpScreen(),
                           ),
                           (route) => false);
                     },

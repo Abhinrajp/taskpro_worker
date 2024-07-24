@@ -1,20 +1,24 @@
+import 'dart:developer';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lottie/lottie.dart';
-import 'package:taskpro/Screens/Home/homescreen.dart';
-import 'package:taskpro/Screens/authentication/Login/loginscreen.dart';
-import 'package:taskpro/Screens/authentication/Signup/mapview.dart';
+import 'package:taskpro/View/authentication/Login/loginscreen.dart';
+import 'package:taskpro/View/authentication/Signup/email_verifying.dart';
+import 'package:taskpro/View/authentication/Signup/mapview.dart';
 import 'package:taskpro/Utilities/utilities.dart';
 import 'package:taskpro/const.dart';
 import 'package:taskpro/controller/Authblock/Authbloc/auth_bloc.dart';
 import 'package:taskpro/controller/Authblock/Authbloc/auth_state.dart';
 import 'package:taskpro/controller/Authblock/Imagebloc/image_bloc.dart';
+import 'package:taskpro/controller/Authblock/Mailbloc/mail_bloc.dart';
 import 'package:taskpro/controller/Authblock/Mapbloc/map_bloc.dart';
 import 'package:taskpro/widgets/signupwidget/signupform.dart';
 import 'package:taskpro/widgets/signupwidget/signupformvalidations.dart';
-import 'package:taskpro/widgets/signupsnakbar.dart';
+import 'package:taskpro/widgets/popups/signupsnakbar.dart';
 import 'package:taskpro/widgets/signupwidget/signupbutton.dart';
+import 'package:taskpro/widgets/signupwidget/simmplewidget.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -25,6 +29,8 @@ class SignUpScreen extends StatefulWidget {
 
 final formKey = GlobalKey<FormState>();
 Utilities utilities = Utilities();
+User? user;
+final auth = FirebaseAuth.instance;
 
 class _SignUpScreenState extends State<SignUpScreen> {
   @override
@@ -34,36 +40,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
         width: double.infinity,
         decoration: const BoxDecoration(
             gradient: LinearGradient(colors: [
-          Color.fromRGBO(17, 46, 64, 1.0),
+          primarycolour,
           Colors.white,
         ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
         child: Scaffold(
             backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              title: Customtextforsignup(
-                  text: 'Sign Up', color: Colors.white, fontsize: 10),
-              centerTitle: true,
-            ),
+            appBar: AppBar(backgroundColor: Colors.transparent),
             body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
               if (state is AuthSuccess) {
-                CustomSnackBar.authenticationresultsnakbar(
-                    context, 'Singed Successfully', Colors.green);
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const Homescreen()),
-                  (route) => false,
-                );
+                log('Auth block success');
+                context.read<MailBloc>().add(StartedEmailverrification());
+                CustomPopups.authenticationresultsnakbar(context,
+                    'Verification mail send to your mail', primarycolour);
+                clearFields();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const EmailVerifying()));
               }
               if (state is AuthFailure) {
-                CustomSnackBar.authenticationresultsnakbar(context, state.error,
+                final onlyerror = extractErrorMessage(state.error);
+                log(state.error.characters.toString());
+                CustomPopups.authenticationresultsnakbar(context, onlyerror,
                     const Color.fromARGB(255, 234, 106, 97));
               }
             }, builder: (context, state) {
               if (state is AuthLoading) {
-                return Center(
-                  child:
-                      LottieBuilder.asset('lib/Assets/signup-animation.json'),
-                );
+                return Center(child: Image.asset('lib/Assets/Authloading.gif'));
               }
               return Padding(
                   padding:
@@ -79,50 +82,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Customtextforsignup(
-                                          text: 'taskpro',
-                                          color: primarycolour,
-                                          fontsize: 28)
+                                      Text(
+                                        'taskpro',
+                                        style: GoogleFonts.poppins(
+                                            color: Colors.white,
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ]),
                                 const SizedBox(height: 20),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Stack(
-                                      children: [
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Stack(children: [
                                         BlocBuilder<ImageBloc, ImageState>(
-                                          builder: (context, state) {
-                                            if (state is Profileimageselected) {
-                                              utilities.profileimage =
-                                                  XFile(state.imagefile.path);
-                                              return Profilecircleavathar(
-                                                  profilepic:
-                                                      utilities.profileimage,
-                                                  showFullImage: showFullImage);
-                                            } else {
-                                              return Profilecircleavathar(
-                                                  profilepic:
-                                                      utilities.profileimage,
-                                                  showFullImage: showFullImage);
-                                            }
-                                          },
-                                        ),
+                                            builder: (context, state) {
+                                          if (state is Profileimageselected) {
+                                            utilities.profileimage =
+                                                XFile(state.imagefile.path);
+                                            return Profilecircleavathar(
+                                                profilepic:
+                                                    utilities.profileimage,
+                                                showFullImage: showFullImage);
+                                          } else {
+                                            return Profilecircleavathar(
+                                                profilepic:
+                                                    utilities.profileimage,
+                                                showFullImage: showFullImage);
+                                          }
+                                        }),
                                         Positioned(
-                                          top: 70,
-                                          left: 65,
-                                          child: CustomDialogButton(
-                                            onImageSelected: (image) =>
-                                                BlocProvider.of<ImageBloc>(
-                                                        context)
-                                                    .add(
-                                                        Selectedprifileimageevent(
-                                                            image: image)),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                            top: 70,
+                                            left: 65,
+                                            child: CustomDialogButton(
+                                                onImageSelected: (image) =>
+                                                    BlocProvider.of<ImageBloc>(
+                                                            context)
+                                                        .add(
+                                                            Selectedprifileimageevent(
+                                                                image: image))))
+                                      ])
+                                    ]),
                                 const SizedBox(height: 20),
                                 Row(children: [
                                   Expanded(
@@ -222,32 +222,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     validator: validateforqualification),
                                 const SizedBox(height: 20),
                                 Signupform(
-                                  controler: utilities.worktype,
-                                  hinttext: 'Work Type',
-                                  icon: const Icon(Icons.work_outline),
-                                  items: utilities.workerTypes,
-                                  validator: validateforwork,
-                                  dropdownvalue: utilities.selectedWorkType,
-                                ),
+                                    controler: utilities.worktype,
+                                    hinttext: 'Work Type',
+                                    icon: const Icon(Icons.work_outline),
+                                    items: utilities.workerTypes,
+                                    validator: validateforwork,
+                                    dropdownvalue: utilities.selectedWorkType),
                                 const SizedBox(height: 36),
                                 Row(children: [
                                   Stack(children: [
                                     BlocBuilder<ImageBloc, ImageState>(
-                                      builder: (context, state) {
-                                        if (state
-                                            is Aadhaarfrontimageselected) {
-                                          utilities.aadharfornt =
-                                              XFile(state.imagefile.path);
-                                          return Aadharcntainer(
-                                              aaadharpic: utilities.aadharfornt,
-                                              showFullImage: showFullImage);
-                                        } else {
-                                          return Aadharcntainer(
-                                              aaadharpic: utilities.aadharfornt,
-                                              showFullImage: showFullImage);
-                                        }
-                                      },
-                                    ),
+                                        builder: (context, state) {
+                                      if (state is Aadhaarfrontimageselected) {
+                                        utilities.aadharfornt =
+                                            XFile(state.imagefile.path);
+                                        return Aadharcntainer(
+                                            aaadharpic: utilities.aadharfornt,
+                                            showFullImage: showFullImage);
+                                      } else {
+                                        return Aadharcntainer(
+                                            aaadharpic: utilities.aadharfornt,
+                                            showFullImage: showFullImage);
+                                      }
+                                    }),
                                     Positioned(
                                         top: 47,
                                         left: 114,
@@ -262,21 +259,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   const SizedBox(width: 16),
                                   Stack(children: [
                                     BlocBuilder<ImageBloc, ImageState>(
-                                      builder: (context, state) {
-                                        if (state is Aadharbackimageselected) {
-                                          utilities.aadharback =
-                                              XFile(state.imagefile.path);
-                                          return Aadharcntainer(
+                                        builder: (context, state) {
+                                      if (state is Aadharbackimageselected) {
+                                        utilities.aadharback =
+                                            XFile(state.imagefile.path);
+                                        return Aadharcntainer(
                                             aaadharpic: utilities.aadharback,
-                                            showFullImage: showFullImage,
-                                          );
-                                        } else {
-                                          return Aadharcntainer(
-                                              aaadharpic: utilities.aadharback,
-                                              showFullImage: showFullImage);
-                                        }
-                                      },
-                                    ),
+                                            showFullImage: showFullImage);
+                                      } else {
+                                        return Aadharcntainer(
+                                            aaadharpic: utilities.aadharback,
+                                            showFullImage: showFullImage);
+                                      }
+                                    }),
                                     Positioned(
                                         top: 47,
                                         left: 114,
@@ -299,7 +294,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       ),
                                       const SizedBox(width: 20),
                                       Aadhartext(
-                                        text: 'Aadhar Frontside',
+                                        text: 'Aadhar Backside',
                                         isbold: utilities.aadharback != null,
                                       )
                                     ])),
@@ -315,7 +310,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     maxlength: 500,
                                     validator: validateforabout),
                                 const SizedBox(height: 20),
-                                Customtextforsignup(
+                                const Customtext(
                                     text:
                                         'Your phone number and location help us match you with the right Client.',
                                     fontsize: 11,
@@ -323,7 +318,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 const SizedBox(height: 20),
                                 const Signupbutton(),
                                 const SizedBox(height: 20),
-                                Customtextforsignup(
+                                const Customtext(
                                     text: 'By signing up, you agree to our'),
                                 Row(
                                     mainAxisAlignment:
@@ -331,23 +326,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     children: [
                                       GestureDetector(
                                           onTap: () {},
-                                          child: Customtextforsignup(
+                                          child: const Customtext(
                                               text: 'Terms of services,',
-                                              color: const Color.fromARGB(
+                                              color: Color.fromARGB(
                                                   255, 22, 115, 191))),
-                                      Customtextforsignup(text: 'and'),
+                                      const Customtext(text: 'and'),
                                       GestureDetector(
                                           onTap: () {},
-                                          child: Customtextforsignup(
+                                          child: const Customtext(
                                               text: 'Privacy Policy',
-                                              color: const Color.fromARGB(
+                                              color: Color.fromARGB(
                                                   255, 22, 115, 191)))
                                     ]),
                                 const SizedBox(height: 50),
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Customtextforsignup(
+                                      const Customtext(
                                           text: 'Already have an account ?'),
                                       GestureDetector(
                                           onTap: () {
@@ -357,12 +352,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                     builder: (context) =>
                                                         const Logingscreen()));
                                           },
-                                          child: Customtextforsignup(
+                                          child: const Customtext(
                                               text: ' Log in',
-                                              color: const Color.fromARGB(
+                                              color: Color.fromARGB(
                                                   255, 22, 115, 191)))
-                                    ])
+                                    ]),
+                                const SizedBox(height: 20),
                               ])))));
             })));
+  }
+
+  clearFields() {
+    utilities.email.clear();
+    utilities.password.clear();
+    utilities.firrstname.clear();
+    utilities.lastname.clear();
+    utilities.phonenumber.clear();
+    utilities.location.clear();
+    utilities.maxqualification.clear();
+    utilities.worktype.clear();
+    utilities.about.clear();
+    utilities.aadharback = null;
+    utilities.aadharfornt = null;
+    utilities.profileimage = null;
   }
 }

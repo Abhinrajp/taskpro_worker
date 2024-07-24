@@ -1,13 +1,12 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:taskpro/Screens/authentication/Signup/signupscreen.dart';
+import 'package:taskpro/View/authentication/Signup/signupscreen.dart';
 import 'package:taskpro/const.dart';
 import 'package:taskpro/controller/Authblock/Authbloc/auth_bloc.dart';
 import 'package:taskpro/controller/Authblock/Authbloc/auth_event.dart';
-import 'package:taskpro/widgets/signupwidget/signupform.dart';
-import 'package:taskpro/widgets/signupsnakbar.dart';
+import 'package:taskpro/widgets/popups/signupsnakbar.dart';
+import 'package:taskpro/widgets/signupwidget/simmplewidget.dart';
 
 class Signupbutton extends StatelessWidget {
   const Signupbutton({
@@ -25,15 +24,16 @@ class Signupbutton extends StatelessWidget {
             utilities.aadharfornt != null &&
             utilities.aadharback != null) {
           BlocProvider.of<AuthBloc>(context).add(SignUpRequested(
-              email: utilities.email.text,
-              password: utilities.password.text,
-              firstName: utilities.firrstname.text,
-              lastName: utilities.lastname.text,
-              phoneNumber: utilities.phonenumber.text,
-              location: utilities.location.text,
-              maxQualification: utilities.maxqualification.text,
-              workType: utilities.worktype.text,
-              about: utilities.about.text,
+              email: utilities.email.text.trim(),
+              password: utilities.password.text.trim(),
+              firstName: utilities.firrstname.text.trim(),
+              lastName: utilities.lastname.text.trim(),
+              phoneNumber: utilities.phonenumber.text.trim(),
+              location: utilities.location.text.trim(),
+              maxQualification: utilities.maxqualification.text.trim(),
+              workType: utilities.worktype.text.trim(),
+              about: utilities.about.text.trim(),
+              registerd: 'registerd',
               aadharBack: utilities.aadharback,
               aadharFront: utilities.aadharfornt,
               profileImage: utilities.profileimage));
@@ -43,14 +43,14 @@ class Signupbutton extends StatelessWidget {
           if (utilities.aadharback == null &&
               utilities.aadharfornt == null &&
               utilities.profileimage == null) {
-            CustomSnackBar.authenticationresultsnakbar(
+            CustomPopups.authenticationresultsnakbar(
                 context, 'Add Image details', Colors.red);
           } else if (utilities.aadharback == null ||
               utilities.aadharfornt == null) {
-            CustomSnackBar.authenticationresultsnakbar(
+            CustomPopups.authenticationresultsnakbar(
                 context, 'Add your Aadhaar details', Colors.red);
           } else {
-            CustomSnackBar.authenticationresultsnakbar(
+            CustomPopups.authenticationresultsnakbar(
                 context, 'Add your Photo', Colors.red);
           }
         }
@@ -58,7 +58,7 @@ class Signupbutton extends StatelessWidget {
       style: const ButtonStyle(
           backgroundColor: WidgetStatePropertyAll(primarycolour),
           fixedSize: WidgetStatePropertyAll(Size(400, 60))),
-      child: Customtextforsignup(text: 'Sign Up', color: Colors.white),
+      child: const Customtext(text: 'Sign Up', color: Colors.white),
     );
   }
 }
