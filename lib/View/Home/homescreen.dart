@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:taskpro/View/Notification/notificationscreen.dart';
 import 'package:taskpro/View/Profile/profilescreen.dart';
 import 'package:taskpro/View/authentication/Login/loginscreen.dart';
 import 'package:taskpro/controller/Fetchbloc/fetchuser_bloc.dart';
@@ -47,8 +48,9 @@ class _HomescreenState extends State<Homescreen> {
                               leading: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(Icons.location_on),
-                                    const SizedBox(height: 4),
+                                    Icon(Icons.location_on,
+                                        size: 17, color: Colors.red[900]),
+                                    const SizedBox(height: 8),
                                     Customtext(text: place)
                                   ]),
                               actions: [
@@ -57,7 +59,14 @@ class _HomescreenState extends State<Homescreen> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       IconButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const Notificationscreen(),
+                                                ));
+                                          },
                                           icon: const Icon(
                                               Icons.notifications_active)),
                                       const SizedBox(width: 35),
@@ -75,6 +84,7 @@ class _HomescreenState extends State<Homescreen> {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         Profilescreen(
+                                                            tag: 'img',
                                                             usermodel:
                                                                 userdata)));
                                           })

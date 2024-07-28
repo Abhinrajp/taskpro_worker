@@ -4,7 +4,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:taskpro/View/Home/homescreen.dart';
+import 'package:taskpro/View/Home/homebottomnavigationbar.dart';
 import 'package:taskpro/View/authentication/Resetpassword/resetpassword.dart';
 import 'package:taskpro/View/authentication/Signup/signupscreen.dart';
 import 'package:taskpro/const.dart';
@@ -210,7 +210,8 @@ class _LogingscreenState extends State<Logingscreen> {
           context, 'Login Successfully', Colors.green);
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const Homescreen()),
+        MaterialPageRoute(
+            builder: (context) => const Homebottomnavigationbar()),
         (route) => false,
       );
     } on FirebaseAuthException catch (e) {

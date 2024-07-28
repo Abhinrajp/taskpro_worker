@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,6 +21,8 @@ class FetchuserBloc extends Bloc<FetchuserEvent, FetchuserState> {
           final data = doc.data()!;
           final userdata = Modelclass(
             data['registerd'],
+            data['aadharFrontUrl'],
+            data['aadharBackUrl'],
             name: '${data['firstName']} ${data['lastName']}',
             email: data['email'],
             phonenumber: data['phoneNumber'],

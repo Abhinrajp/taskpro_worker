@@ -9,8 +9,10 @@ class Modelclass {
   final String totalwork;
   final String location;
   final String register;
+  final String aadharfront;
+  final String aadharback;
 
-  Modelclass(this.register,
+  Modelclass(this.register, this.aadharfront, this.aadharback,
       {required this.name,
       required this.email,
       required this.phonenumber,

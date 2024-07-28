@@ -5,7 +5,8 @@ import 'package:taskpro/widgets/signupwidget/simmplewidget.dart';
 
 class Profilescreen extends StatelessWidget {
   final Modelclass usermodel;
-  const Profilescreen({super.key, required this.usermodel});
+  final String tag;
+  const Profilescreen({super.key, required this.usermodel, required this.tag});
 
   @override
   Widget build(BuildContext context) {
@@ -26,26 +27,29 @@ class Profilescreen extends StatelessWidget {
               ]),
           height: 390,
           width: double.infinity,
-          child: Stack(fit: StackFit.expand, children: [
-            ClipRRect(
-                borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(25),
-                    bottomRight: Radius.circular(25)),
-                child:
-                    Image.network(usermodel.profileimage, fit: BoxFit.cover)),
-            Positioned(
-                left: 20,
-                top: 50,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: CircleAvatar(
-                      backgroundColor: Colors.white.withOpacity(.5),
-                      child:
-                          const Icon(Icons.arrow_back, color: primarycolour)),
-                ))
-          ])),
+          child: Hero(
+            tag: tag,
+            child: Stack(fit: StackFit.expand, children: [
+              ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(25),
+                      bottomRight: Radius.circular(25)),
+                  child:
+                      Image.network(usermodel.profileimage, fit: BoxFit.cover)),
+              Positioned(
+                  left: 20,
+                  top: 50,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: CircleAvatar(
+                        backgroundColor: Colors.white.withOpacity(.5),
+                        child:
+                            const Icon(Icons.arrow_back, color: primarycolour)),
+                  ))
+            ]),
+          )),
       const SizedBox(height: 40),
       Customtext(
           text: usermodel.worktype, fontsize: 20, fontWeight: FontWeight.bold),
@@ -94,20 +98,56 @@ class Profilescreen extends StatelessWidget {
           fontWeight: FontWeight.bold,
           fontsize: 14);
     } else if (status == 'Rejected') {
-      return const Column(children: [
-        Customtext(
+      return Column(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Container(
+              height: 160,
+              width: 160,
+              decoration: const BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.all(Radius.circular(25))),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(25)),
+                child: Image.network(
+                  usermodel.aadharfront,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              height: 160,
+              width: 160,
+              decoration: const BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.all(Radius.circular(25))),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(25)),
+                child: Image.network(
+                  usermodel.aadharback,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        const Customtext(
             text: 'Your account got Rejected',
             color: Colors.red,
             fontWeight: FontWeight.bold,
             fontsize: 16),
-        Customtext(
+        const Customtext(
             text: 'Please upload your ID proof again',
             color: Colors.red,
             fontWeight: FontWeight.bold,
             fontsize: 10)
       ]);
     } else {
-      return const Customtext(text: '', fontsize: 0);
+      return Row(
+        children: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
+      );
     }
   }
 }

@@ -10,7 +10,9 @@ import 'package:taskpro/controller/Authblock/Authbloc/auth_bloc.dart';
 import 'package:taskpro/controller/Authblock/Imagebloc/image_bloc.dart';
 import 'package:taskpro/controller/Authblock/Mailbloc/mail_bloc.dart';
 import 'package:taskpro/controller/Authblock/Mapbloc/map_bloc.dart';
+import 'package:taskpro/controller/Bottombar/bottombar_bloc.dart';
 import 'package:taskpro/controller/Fetchbloc/fetchuser_bloc.dart';
+import 'package:taskpro/controller/Schedulebloc/Datebloc/date_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +38,8 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => MapBloc()),
           BlocProvider(create: (context) => MailBloc()),
           BlocProvider(create: (context) => FetchuserBloc()),
+          BlocProvider(create: (context) => BottombarBloc()),
+          BlocProvider(create: (context) => DateBloc()),
         ],
         child: MaterialApp(
             title: 'taskpro',
