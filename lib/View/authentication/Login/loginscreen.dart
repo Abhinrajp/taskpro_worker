@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:taskpro/View/Home/homebottomnavigationbar.dart';
 import 'package:taskpro/View/authentication/Resetpassword/resetpassword.dart';
 import 'package:taskpro/View/authentication/Signup/signupscreen.dart';
-import 'package:taskpro/const.dart';
+import 'package:taskpro/Utilities/const.dart';
 import 'package:taskpro/widgets/signupwidget/signupform.dart';
 import 'package:taskpro/widgets/signupwidget/signupformvalidations.dart';
 import 'package:taskpro/widgets/popups/signupsnakbar.dart';

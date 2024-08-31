@@ -2,9 +2,14 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:taskpro/View/Notification/notificationscreen.dart';
+import 'package:lottie/lottie.dart';
+import 'package:taskpro/Functions/customfunctions.dart';
+import 'package:taskpro/Model/model.dart';
+import 'package:taskpro/Services/authservices.dart';
+import 'package:taskpro/View/Home/scheduledworks.dart';
+import 'package:taskpro/View/Settings/settingsscreen.dart';
 import 'package:taskpro/View/Profile/profilescreen.dart';
-import 'package:taskpro/View/authentication/Login/loginscreen.dart';
+import 'package:taskpro/Utilities/const.dart';
 import 'package:taskpro/controller/Fetchbloc/fetchuser_bloc.dart';
 import 'package:taskpro/widgets/popups/signupsnakbar.dart';
 import 'package:taskpro/widgets/signupwidget/simmplewidget.dart';
@@ -16,6 +21,15 @@ class Homescreen extends StatefulWidget {
   State<Homescreen> createState() => _HomescreenState();
 }
 
+final user = FirebaseAuth.instance.currentUser;
+final Scheduledworks scheduledworks = Scheduledworks();
+CustomPopups customPopups = CustomPopups();
+Authservices authservices = Authservices();
+String popupsettings = 'Settings';
+String popupProfile = 'Profile';
+
+final Customfunctions customfunctions = Customfunctions();
+
 class _HomescreenState extends State<Homescreen> {
   @override
   void initState() {
@@ -25,116 +39,113 @@ class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-
-    CustomPopups customPopups = CustomPopups();
     return Scaffold(
-        body: Padding(
-            padding: const EdgeInsets.all(15),
-            child: BlocBuilder<FetchuserBloc, FetchuserState>(
-                builder: (context, state) {
-              if (state is FetchuserLoaded) {
-                final userdata = state.userdata;
-                var profileimage = userdata.profileimage;
-                var place = extractplace(userdata.location);
-                log(userdata.location);
-                return Column(children: [
-                  SizedBox(
-                      width: 360,
-                      child: PreferredSize(
-                          preferredSize: const Size.fromHeight(26),
-                          child: AppBar(
-                              leadingWidth: double.infinity,
-                              leading: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Icon(Icons.location_on,
-                                        size: 17, color: Colors.red[900]),
-                                    const SizedBox(height: 8),
-                                    Customtext(text: place)
-                                  ]),
-                              actions: [
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      IconButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const Notificationscreen(),
-                                                ));
-                                          },
-                                          icon: const Icon(
-                                              Icons.notifications_active)),
-                                      const SizedBox(width: 35),
-                                      InkWell(
-                                          splashColor: Colors.white38,
-                                          child: CircleAvatar(
-                                            backgroundColor: Colors.grey,
-                                            radius: 20,
-                                            backgroundImage:
-                                                NetworkImage(profileimage),
-                                          ),
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Profilescreen(
-                                                            tag: 'img',
-                                                            usermodel:
-                                                                userdata)));
-                                          })
-                                    ])
-                              ]))),
-                  Center(child: Text('${user!.email}'))
-                ]);
-              } else if (state is FetchuserLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is FetchuserError) {
-                return Center(child: Text(state.error));
-              } else {
-                return const Center(child: Text('No data'));
-              }
-            })),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            log('logout clicked');
-            customPopups.alertboxforconfirmation(
-                context, () => signout(context, user!));
-          },
-          child: const Icon(Icons.exit_to_app),
-        ));
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: body());
   }
 
-  signout(BuildContext context, User user) async {
-    await FirebaseAuth.instance.signOut();
-    CustomPopups.authenticationresultsnakbar(
-        context, 'Logout from ${user.email}', Colors.red);
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const Logingscreen(),
-      ),
-      (route) => false,
-    );
+  AppBar appbar(
+      BuildContext context, String place, profileimage, Modelclass userdata) {
+    return AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        leadingWidth: double.infinity,
+        leading:
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(Icons.location_on, size: 17, color: Colors.red[900]),
+          const SizedBox(height: 8),
+          Customtext(text: place)
+        ]),
+        actions: [appbaraction(profileimage, userdata)]);
   }
 
-  String extractplace(String location) {
-    List<String> parts = location.split(',');
-    parts = parts.map((part) => part.trim()).toList();
-    if (parts.length >= 4) {
-      if (parts[parts.length - 3].isNotEmpty) {
-        return parts[parts.length - 3];
-      } else {
-        return parts[parts.length - 4];
-      }
-    } else if (parts.length >= 3) {
-      return parts[parts.length - 3];
-    }
-    return 'Unknown';
+  Widget appbaraction(String profileimage, Modelclass userdata) {
+    return Row(children: [
+      InkWell(
+          splashColor: Colors.white38,
+          child: Stack(children: [
+            const CircleAvatar(
+                radius: 20,
+                backgroundColor: Colors.transparent,
+                backgroundImage: AssetImage('lib/Assets/User-Profile-PNG.png')),
+            CircleAvatar(
+                backgroundColor: Colors.transparent,
+                radius: 20,
+                backgroundImage: NetworkImage(profileimage)),
+          ]),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Profilescreen(tag: 'img', usermodel: userdata)));
+          }),
+      const SizedBox(width: 10),
+      PopupMenuButton(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          itemBuilder: (context) => [
+                PopupMenuItem(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Profilescreen(
+                                tag: 'img', usermodel: userdata)));
+                  },
+                  value: popupProfile,
+                  child: Customtext(text: popupProfile),
+                ),
+                PopupMenuItem(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  Settingsscreen(usermodel: userdata)));
+                    },
+                    value: popupsettings,
+                    child: Customtext(text: popupsettings))
+              ])
+    ]);
+  }
+
+  Widget body() {
+    return Padding(
+        padding: const EdgeInsets.all(0),
+        child: BlocBuilder<FetchuserBloc, FetchuserState>(
+            builder: (context, state) {
+          if (state is FetchuserLoaded) {
+            final userdata = state.userdata;
+            var profileimage = userdata.profileimage;
+            var place = customfunctions.extractplace(userdata.location);
+            log(userdata.location);
+            return Stack(children: [
+              Column(children: [
+                Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: appbar(context, place, profileimage, userdata)),
+                Expanded(child: Center(child: scheduledworks.streamschedule()))
+              ]),
+              Positioned(
+                  top: 110,
+                  left: 25,
+                  child: Row(children: [
+                    Customtext(
+                        text: 'Scheduled works',
+                        fontWeight: FontWeight.bold,
+                        fontsize: 18,
+                        color: primarycolour.withOpacity(.8))
+                  ]))
+            ]);
+          } else if (state is FetchuserLoading) {
+            return Center(
+                child: SizedBox(
+                    height: 70,
+                    child: LottieBuilder.asset('lib/Assets/wsh0QqtlX0.json')));
+          } else if (state is FetchuserError) {
+            return Center(child: Customtext(text: state.error));
+          } else {
+            return const Center(child: Customtext(text: 'No data'));
+          }
+        }));
   }
 }

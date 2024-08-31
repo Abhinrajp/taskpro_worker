@@ -1,9 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:taskpro/Services/chatservices.dart';
 import 'package:taskpro/View/Chat/schedulescreen.dart';
-import 'package:taskpro/const.dart';
+import 'package:taskpro/Utilities/const.dart';
+import 'package:taskpro/widgets/Message/messagewidget.dart';
+import 'package:taskpro/widgets/popups/signupsnakbar.dart';
 import 'package:taskpro/widgets/signupwidget/simmplewidget.dart';
 
 class Messagescreen extends StatefulWidget {
@@ -14,143 +16,122 @@ class Messagescreen extends StatefulWidget {
   State<Messagescreen> createState() => _MessagescreenState();
 }
 
-class _MessagescreenState extends State<Messagescreen> {
-  final messagecontroller = TextEditingController();
-  final Chatservices chatservices = Chatservices();
+final messagecontroller = TextEditingController();
+final Chatservices chatservices = Chatservices();
+final paymentcontroller = TextEditingController();
 
-  void sendmessage() async {
+final Messagescreenwidget messagescreenwidget = Messagescreenwidget();
+
+class _MessagescreenState extends State<Messagescreen> {
+  @override
+  void initState() {
+    super.initState();
+    chatservices.updateLastSeen(
+        FirebaseAuth.instance.currentUser!.uid, widget.worker['id']);
+    // chatservices.updateLastSeenForOtherUser(
+    //     widget.worker['id'], FirebaseAuth.instance.currentUser!.uid);
+  }
+
+  void sendtextmessage() async {
     var name = widget.worker['name'];
     if (messagecontroller.text.isNotEmpty) {
       chatservices.sendmessage(
-          widget.worker['id'], name, messagecontroller.text);
+          widget.worker['id'], name, messagecontroller.text, 'text');
+      log(messagecontroller.text);
       messagecontroller.clear();
+    }
+  }
+
+  void sendbuttonmessage() async {
+    var name = widget.worker['name'];
+    if (paymentcontroller.text.isNotEmpty) {
+      chatservices.sendmessage(
+          widget.worker['id'], name, paymentcontroller.text, 'payment');
+      paymentcontroller.clear();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget profileimgwidget = messagescreenwidget.profilewidget(widget.worker);
     var name = widget.worker['name'];
     return Scaffold(
-      appBar: AppBar(
-        leadingWidth: 350,
-        leading: Row(
-          children: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.arrow_back)),
-            const SizedBox(width: 20),
-            CircleAvatar(
-                backgroundImage: NetworkImage(widget.worker['profileimage'])),
-            const SizedBox(width: 20),
-            Customtext(
-              text: name,
-              fontWeight: FontWeight.bold,
-            )
-          ],
-        ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const Schedulescreen(
-                              tag: 'tag',
-                            )));
-              },
-              icon: const Icon(Icons.calendar_month_rounded)),
-          const SizedBox(width: 10),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.call_rounded)),
-          const SizedBox(width: 20)
-        ],
-      ),
-      body: Column(
-        children: [
+        appBar: appbar(
+            context, profileimgwidget, name, widget.worker, sendbuttonmessage),
+        body: Column(children: [
           const SizedBox(height: 20),
-          Expanded(child: messagelist()),
-          inputmessage()
-        ],
-      ),
-    );
-  }
-
-  Widget messagelist() {
-    String semderid = FirebaseAuth.instance.currentUser!.uid;
-    return StreamBuilder(
-      stream: chatservices.getmessages(widget.worker['id'], semderid),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(
-            child: Customtext(text: snapshot.error.toString()),
-          );
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        return ListView(
-          children: snapshot.data!.docs.map((doc) => messageitem(doc)).toList(),
-        );
-      },
-    );
-  }
-
-  Widget messageitem(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    bool iscurrentuser =
-        data['senderid'] == FirebaseAuth.instance.currentUser!.uid;
-    return Column(
-        crossAxisAlignment:
-            iscurrentuser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15, top: 5),
-              child: Container(
-                  decoration: BoxDecoration(
-                      color: iscurrentuser
-                          ? primarycolour.withOpacity(.8)
-                          : Colors.grey.withOpacity(.5),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20))),
-                  child: Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: Customtext(
-                          text: data['message'],
-                          color:
-                              iscurrentuser ? Colors.white : Colors.black)))),
-        ]);
-  }
-
-  Widget inputmessage() {
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(children: [
-          Expanded(
-              child: TextFormField(
-            minLines: 1,
-            maxLines: null,
-            textCapitalization: TextCapitalization.sentences,
-            controller: messagecontroller,
-            decoration: InputDecoration(
-                hintStyle: const TextStyle(fontSize: 13),
-                filled: true,
-                fillColor: Colors.grey.withOpacity(.2),
-                hintText: 'Type something ...',
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey.withOpacity(.2)),
-                    borderRadius: const BorderRadius.all(Radius.circular(50)))),
-          )),
-          const SizedBox(width: 8),
-          ElevatedButton(
-              style: const ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(primarycolour),
-                  minimumSize: WidgetStatePropertyAll(Size(10, 60))),
-              onPressed: sendmessage,
-              child:
-                  const Icon(Icons.send_rounded, size: 28, color: Colors.white))
+          Expanded(child: messagescreenwidget.messagelist(widget.worker)),
+          messagescreenwidget.inputmessage(sendtextmessage, messagecontroller)
         ]));
   }
+}
+
+AppBar appbar(BuildContext context, Widget profilewidget, String name,
+    Map<String, dynamic> worker, void Function() sendbuttonmessage) {
+  return AppBar(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      leadingWidth: 238,
+      leading: Row(children: [
+        IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back)),
+        const SizedBox(width: 20),
+        Stack(children: [
+          const CircleAvatar(
+              radius: 23,
+              backgroundColor: Colors.transparent,
+              backgroundImage: AssetImage('lib/Assets/User-Profile-PNG.png')),
+          CircleAvatar(
+              radius: 23,
+              backgroundColor: Colors.transparent,
+              child: ClipOval(child: profilewidget))
+        ]),
+        const SizedBox(width: 20),
+        Expanded(child: Customtext(text: name, fontWeight: FontWeight.bold))
+      ]),
+      actions: [
+        IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Schedulescreen(worker: worker, tag: 'tag')));
+            },
+            icon: const Icon(Icons.calendar_month_rounded)),
+        paymenticon(context, sendbuttonmessage),
+        IconButton(onPressed: () {}, icon: const Icon(Icons.call_rounded)),
+        const SizedBox(width: 5)
+      ]);
+}
+
+Widget paymenticon(BuildContext context, void Function() sendbuttonmessage) {
+  return IconButton(
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    title: const Customtext(
+                        text: 'Enter the amount',
+                        fontWeight: FontWeight.bold,
+                        fontsize: 15),
+                    content: TextFormField(controller: paymentcontroller),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            sendbuttonmessage();
+                            CustomPopups.authenticationresultsnakbar(
+                                context,
+                                'payment request send successfully',
+                                primarycolour);
+                            Navigator.pop(context);
+                          },
+                          child: const Customtext(
+                              text: 'Ok', fontWeight: FontWeight.bold))
+                    ]));
+      },
+      icon: const Icon(Icons.payment_outlined));
 }

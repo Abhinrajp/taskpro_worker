@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskpro/const.dart';
+import 'package:taskpro/Utilities/const.dart';
 
 class SplashscreenFour extends StatelessWidget {
   const SplashscreenFour({super.key});

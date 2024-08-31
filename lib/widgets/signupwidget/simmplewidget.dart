@@ -21,6 +21,7 @@ class Customtext extends StatelessWidget {
       text,
       style: GoogleFonts.cabin(
           fontSize: fontsize, fontWeight: fontWeight, color: color),
+      overflow: TextOverflow.clip,
     );
   }
 }

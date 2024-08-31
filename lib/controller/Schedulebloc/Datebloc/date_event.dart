@@ -8,3 +8,5 @@ class Dateseletedevent extends DateEvent {
 
   Dateseletedevent(this.selecteddate);
 }
+
+class Dateresetevent extends DateEvent {}

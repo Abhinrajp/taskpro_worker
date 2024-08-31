@@ -8,7 +8,7 @@ import 'package:taskpro/View/authentication/Login/loginscreen.dart';
 import 'package:taskpro/View/authentication/Signup/email_verifying.dart';
 import 'package:taskpro/View/authentication/Signup/mapview.dart';
 import 'package:taskpro/Utilities/utilities.dart';
-import 'package:taskpro/const.dart';
+import 'package:taskpro/Utilities/const.dart';
 import 'package:taskpro/controller/Authblock/Authbloc/auth_bloc.dart';
 import 'package:taskpro/controller/Authblock/Authbloc/auth_state.dart';
 import 'package:taskpro/controller/Authblock/Imagebloc/image_bloc.dart';
@@ -82,13 +82,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        'taskpro',
-                                        style: GoogleFonts.poppins(
-                                            color: Colors.white,
-                                            fontSize: 28,
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                      Text('taskpro',
+                                          style: GoogleFonts.poppins(
+                                              color: Colors.white,
+                                              fontSize: 28,
+                                              fontWeight: FontWeight.bold))
                                     ]),
                                 const SizedBox(height: 20),
                                 Row(
@@ -357,7 +355,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                               color: Color.fromARGB(
                                                   255, 22, 115, 191)))
                                     ]),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 20)
                               ])))));
             })));
   }

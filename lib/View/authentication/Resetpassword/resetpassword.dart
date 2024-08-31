@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:taskpro/View/authentication/Login/loginscreen.dart';
-import 'package:taskpro/const.dart';
+import 'package:taskpro/Utilities/const.dart';
 import 'package:taskpro/widgets/signupwidget/signupform.dart';
 import 'package:taskpro/widgets/signupwidget/signupformvalidations.dart';
 import 'package:taskpro/widgets/popups/signupsnakbar.dart';

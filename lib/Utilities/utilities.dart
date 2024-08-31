@@ -6,15 +6,18 @@ class Utilities {
   XFile? profileimage;
   XFile? aadharfornt;
   XFile? aadharback;
-  final firrstname = TextEditingController();
-  final lastname = TextEditingController();
-  final email = TextEditingController();
-  final password = TextEditingController();
-  final phonenumber = TextEditingController();
-  final location = TextEditingController();
-  final maxqualification = TextEditingController();
-  final worktype = TextEditingController();
-  final about = TextEditingController();
+  String? editprofileimg;
+  String? editaadharfrontimg;
+  String? editaadharbackimg;
+  var firrstname = TextEditingController();
+  var lastname = TextEditingController();
+  var email = TextEditingController();
+  var password = TextEditingController();
+  var phonenumber = TextEditingController();
+  var location = TextEditingController();
+  var maxqualification = TextEditingController();
+  var worktype = TextEditingController();
+  var about = TextEditingController();
   String? selectedWorkType;
   LatLng? selectedLocationLatLng;
   final List<String> workerTypes = [

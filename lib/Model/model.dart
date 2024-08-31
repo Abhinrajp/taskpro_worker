@@ -9,6 +9,7 @@ class Modelclass {
   final String totalwork;
   final String location;
   final String register;
+  final String rating;
   final String aadharfront;
   final String aadharback;
 
@@ -21,5 +22,6 @@ class Modelclass {
       required this.qualification,
       required this.about,
       required this.totalwork,
+      required this.rating,
       required this.location});
 }

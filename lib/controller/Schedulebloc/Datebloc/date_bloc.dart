@@ -9,5 +9,8 @@ class DateBloc extends Bloc<DateEvent, DateState> {
     on<Dateseletedevent>((event, emit) {
       emit(Dateselectedstate(event.selecteddate));
     });
+    on<Dateresetevent>((event, emit) {
+      emit(DateInitial());
+    });
   }
 }

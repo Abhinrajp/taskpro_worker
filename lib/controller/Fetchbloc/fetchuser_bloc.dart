@@ -30,7 +30,8 @@ class FetchuserBloc extends Bloc<FetchuserEvent, FetchuserState> {
             profileimage: data['profileImageUrl'],
             qualification: data['maxQualification'],
             about: data['about'],
-            totalwork: '0',
+            rating: data['rating'],
+            totalwork: data['totalwork'],
             location: data['location'],
           );
           emit(FetchuserLoaded(userdata: userdata));

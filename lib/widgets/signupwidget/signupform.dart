@@ -3,7 +3,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:taskpro/const.dart';
+import 'package:taskpro/Utilities/const.dart';
 import 'package:taskpro/widgets/signupwidget/simmplewidget.dart';
 
 class CustomDialogButton extends StatefulWidget {
@@ -28,51 +28,39 @@ class _CustomDialogButtonState extends State<CustomDialogButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () async {
-        showDialog(
-          context: context,
-          builder: (context) => Padding(
-            padding: const EdgeInsets.all(78.0),
-            child: Dialog(
-              backgroundColor: primarycolour,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    onPressed: () async {
-                      await pickImage(ImageSource.camera);
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(
-                      Icons.camera_alt_outlined,
-                      size: 45,
-                      color: Colors.white,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () async {
-                      await pickImage(ImageSource.gallery);
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(
-                      Icons.image_outlined,
-                      size: 45,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-      icon: const Icon(
-        Icons.camera_alt_outlined,
-        size: 28,
-        color: Colors.black,
-      ),
-    );
+        onPressed: () async {
+          showDialog(
+              context: context,
+              builder: (context) => Padding(
+                  padding: const EdgeInsets.all(78.0),
+                  child: Dialog(
+                      backgroundColor: primarycolour,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () async {
+                                await pickImage(ImageSource.camera);
+                                Navigator.of(context).pop();
+                              },
+                              icon: const Icon(
+                                Icons.camera_alt_outlined,
+                                size: 45,
+                                color: Colors.white,
+                              ),
+                            ),
+                            IconButton(
+                                onPressed: () async {
+                                  await pickImage(ImageSource.gallery);
+                                  Navigator.of(context).pop();
+                                },
+                                icon: const Icon(Icons.image_outlined,
+                                    size: 45, color: Colors.white))
+                          ]))));
+        },
+        icon: const Icon(Icons.camera_alt_outlined,
+            size: 28, color: Colors.black));
   }
 }
 
@@ -151,36 +139,34 @@ class Signupform extends StatelessWidget {
           validator: validator);
     } else {
       return TextFormField(
-        controller: controler,
-        minLines: minline,
-        maxLines: maxline,
-        keyboardType: keybordtype,
-        maxLength: maxlength,
-        readOnly: readonly,
-        onTap: onTap,
-        textCapitalization: textCapitalization,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        validator: validator,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(vertical: 15),
-          fillColor: Colors.white.withOpacity(0.8),
-          enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            borderSide: BorderSide(color: Colors.black),
-          ),
-          focusedBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-              borderSide: BorderSide(color: Colors.black)),
-          errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide: const BorderSide(color: Colors.red)),
-          focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide: const BorderSide(color: Colors.red)),
-          prefixIcon: Icon(icon.icon),
-          label: Customtext(text: hinttext),
-        ),
-      );
+          controller: controler,
+          minLines: minline,
+          maxLines: maxline,
+          keyboardType: keybordtype,
+          maxLength: maxlength,
+          readOnly: readonly,
+          onTap: onTap,
+          textCapitalization: textCapitalization,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: validator,
+          decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(vertical: 15),
+              fillColor: Colors.white.withOpacity(0.8),
+              enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              focusedBorder: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  borderSide: BorderSide(color: Colors.black)),
+              errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: const BorderSide(color: Colors.red)),
+              focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: const BorderSide(color: Colors.red)),
+              prefixIcon: Icon(icon.icon),
+              label: Customtext(text: hinttext)));
     }
   }
 }
@@ -198,33 +184,29 @@ class Aadharcntainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-      ),
-      height: 80,
-      width: 150,
-      child: aaadharpic != null
-          ? GestureDetector(
-              onLongPress: () {
-                showFullImage(context, File(aaadharpic!.path), 'aadhaar');
-              },
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(15)),
-                child: Image.file(
-                  File(aaadharpic!.path),
-                  fit: BoxFit.cover,
+        decoration: const BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
+        height: 80,
+        width: 150,
+        child: aaadharpic != null
+            ? GestureDetector(
+                onLongPress: () {
+                  showFullImage(context, File(aaadharpic!.path), 'aadhaar');
+                },
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
+                  child: Image.file(
+                    File(aaadharpic!.path),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-            )
-          : ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(15)),
-              child: Image.asset(
-                'lib/Assets/user-image.png',
-                fit: BoxFit.cover,
-              ),
-            ),
-    );
+              )
+            : ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(15)),
+                child: Image.asset('lib/Assets/user-image.png',
+                    fit: BoxFit.cover)));
   }
 }
 
@@ -243,21 +225,14 @@ class Profilecircleavathar extends StatelessWidget {
     return profilepic != null
         ? GestureDetector(
             onLongPress: () {
-              showFullImage(
-                context,
-                File(profilepic!.path),
-                'profile',
-              );
+              showFullImage(context, File(profilepic!.path), 'profile');
             },
             child: CircleAvatar(
-              backgroundImage: FileImage(File(profilepic!.path)),
-              maxRadius: 53,
-            ),
-          )
+                backgroundImage: FileImage(File(profilepic!.path)),
+                maxRadius: 53))
         : const CircleAvatar(
             backgroundImage: AssetImage('lib/Assets/user-image.png'),
-            maxRadius: 53,
-          );
+            maxRadius: 53);
   }
 }
 
@@ -273,33 +248,25 @@ class Aadhartext extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Text(
-        text,
-        style: TextStyle(
-            fontWeight: isbold ? FontWeight.bold : FontWeight.normal,
-            fontSize: 11),
-      ),
-    );
+        child: Text(text,
+            style: TextStyle(
+                fontWeight: isbold ? FontWeight.bold : FontWeight.normal,
+                fontSize: 11)));
   }
 }
 
 void showFullImage(BuildContext context, File imageFile, String text) {
   showDialog(
-    context: context,
-    builder: (context) => Dialog(
-      backgroundColor: Colors.transparent,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          text == 'profile'
-              ? CircleAvatar(
-                  minRadius: 30,
-                  maxRadius: 190,
-                  backgroundImage: FileImage(imageFile),
-                )
-              : Image.file(imageFile)
-        ],
-      ),
-    ),
-  );
+      context: context,
+      builder: (context) => Dialog(
+          backgroundColor: Colors.transparent,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            text == 'profile'
+                ? CircleAvatar(
+                    minRadius: 30,
+                    maxRadius: 190,
+                    backgroundImage: FileImage(imageFile),
+                  )
+                : Image.file(imageFile)
+          ])));
 }

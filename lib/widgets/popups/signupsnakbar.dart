@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:taskpro/const.dart';
+import 'package:taskpro/Utilities/const.dart';
 
 class CustomPopups {
   static void authenticationresultsnakbar(
@@ -25,30 +25,29 @@ class CustomPopups {
 
   void alertboxforconfirmation(BuildContext context, Function fun) {
     showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: primarycolour,
-        title: const Text(
-          'Are you sure',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        content: const Text('Do you want to Logout ?',
-            style: TextStyle(color: Colors.white)),
-        actions: <Widget>[
-          ElevatedButton(
-              onPressed: () {
-                log('logout clicked on the lerbox');
-                fun();
-              },
-              child: const Text('Yes')),
-          ElevatedButton(
-              onPressed: () {
-                log("clicked");
-                Navigator.pop(context);
-              },
-              child: const Text('No')),
-        ],
-      ),
-    );
+        context: context,
+        builder: (context) => AlertDialog(
+                backgroundColor: primarycolour,
+                title: const Text(
+                  'Are you sure',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                content: const Text('Do you want to Logout ?',
+                    style: TextStyle(color: Colors.white)),
+                actions: <Widget>[
+                  ElevatedButton(
+                      onPressed: () {
+                        log('logout clicked on the lerbox');
+                        fun();
+                      },
+                      child: const Text('Yes')),
+                  ElevatedButton(
+                      onPressed: () {
+                        log("clicked");
+                        Navigator.pop(context);
+                      },
+                      child: const Text('No'))
+                ]));
   }
 }

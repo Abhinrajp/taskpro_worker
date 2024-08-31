@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:taskpro/View/authentication/Signup/signupscreen.dart';
-import 'package:taskpro/const.dart';
+import 'package:taskpro/Utilities/const.dart';
 import 'package:taskpro/controller/Authblock/Authbloc/auth_bloc.dart';
 import 'package:taskpro/controller/Authblock/Authbloc/auth_event.dart';
 import 'package:taskpro/widgets/popups/signupsnakbar.dart';

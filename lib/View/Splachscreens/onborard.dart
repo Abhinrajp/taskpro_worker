@@ -5,7 +5,7 @@ import 'package:taskpro/View/Splachscreens/splashscreenmain.dart';
 import 'package:taskpro/View/Splachscreens/splashscreensecond.dart';
 import 'package:taskpro/View/Splachscreens/splashscreenthree.dart';
 import 'package:taskpro/View/authentication/Signup/signupscreen.dart';
-import 'package:taskpro/const.dart';
+import 'package:taskpro/Utilities/const.dart';
 
 class OnboradingScreen extends StatefulWidget {
   const OnboradingScreen({super.key});
